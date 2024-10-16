@@ -13,6 +13,15 @@ export interface PostDoc extends BaseDoc {
   options?: PostOptions;
 }
 
+interface FormattedPost {
+  author: string;
+  content: string;
+  options?: PostOptions;
+  _id: ObjectId;
+  dateCreated: Date;
+  dateUpdated: Date;
+}
+
 /**
  * concept: Posting [Author]
  */
@@ -28,7 +37,9 @@ export default class PostingConcept {
 
   async create(author: ObjectId, content: string, options?: PostOptions) {
     const _id = await this.posts.createOne({ author, content, options });
-    return { msg: "Post successfully created!", post: await this.posts.readOne({ _id }) };
+    const post = await this.posts.readOne({ _id });
+    if (!post) throw new NotFoundError(`Post ${_id} does not exist!`);
+    return { msg: "Post successfully created!", post };
   }
 
   async getPosts() {
@@ -41,9 +52,10 @@ export default class PostingConcept {
   }
 
   async update(_id: ObjectId, content?: string, options?: PostOptions) {
-    // Note that if content or options is undefined, those fields will *not* be updated
-    // since undefined values for partialUpdateOne are ignored.
-    await this.posts.partialUpdateOne({ _id }, { content, options });
+    const update: Partial<PostDoc> = {};
+    if (content) update.content = content;
+    if (options) update.options = options;
+    await this.posts.partialUpdateOne({ _id }, update);
     return { msg: "Post successfully updated!" };
   }
 
@@ -52,14 +64,20 @@ export default class PostingConcept {
     return { msg: "Post deleted successfully!" };
   }
 
-  async assertAuthorIsUser(_id: ObjectId, user: ObjectId) {
+  redactAuthor(post: FormattedPost) {
+    // eslint-disable-next-line
+    const { author, ...rest } = post;
+    return rest;
+  }
+
+  async assertUserIsAuthor(_id: ObjectId, user: ObjectId) {
     const post = await this.posts.readOne({ _id });
-    if (!post) {
-      throw new NotFoundError(`Post ${_id} does not exist!`);
-    }
-    if (post.author.toString() !== user.toString()) {
-      throw new PostAuthorNotMatchError(user, _id);
-    }
+    if (!post) throw new NotFoundError(`Post ${_id} does not exist!`);
+    if (!user.equals(post.author)) throw new PostAuthorNotMatchError(user, _id);
+  }
+
+  async assertPostExists(_id: ObjectId) {
+    if (!(await this.posts.readOne({ _id }))) throw new NotFoundError(`Post ${_id} does not exist!`);
   }
 }
 
