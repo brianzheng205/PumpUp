@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import CreatePostForm from "@/components/Post/CreatePostForm.vue";
-import EditPostForm from "@/components/Post/EditPostForm.vue";
-import PostComponent from "@/components/Post/PostComponent.vue";
+import CreatePostForm from "@/components/Items/Post/CreatePostForm.vue";
+import EditPostForm from "@/components/Items/Post/EditPostForm.vue";
+import PostComponent from "@/components/Items/Post/PostComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
@@ -45,7 +45,7 @@ onBeforeMount(async () => {
   <div class="row">
     <h2 v-if="!searchAuthor">Posts:</h2>
     <h2 v-else>Posts by {{ searchAuthor }}:</h2>
-    <SearchPostForm @getPostsByAuthor="getPosts" />
+    <SearchPostForm legendText="Search By Author" @getPostsByAuthor="getPosts" />
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">

@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+const props = defineProps(["legendText"]);
+
 const author = ref("");
-const emit = defineEmits(["getPostsByAuthor"]);
+const emit = defineEmits(["getItemsByUser"]);
+console.log(props.legendText);
 </script>
 
 <template>
-  <form @submit.prevent="emit('getPostsByAuthor', author)" class="pure-form">
+  <form @submit.prevent="emit('getItemsByUser', author)" class="pure-form">
     <fieldset>
-      <legend>Search by Author</legend>
+      <legend>{{ props.legendText }}</legend>
       <input id="author" type="text" v-model="author" placeholder="Username" />
       <button type="submit" class="pure-button pure-button-primary">Search</button>
     </fieldset>

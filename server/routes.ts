@@ -127,6 +127,7 @@ class Routes {
    * @returns An array of posts, filtered and redacted if necessary
    */
   @Router.get("/posts")
+  // TODO: fix validating to work with sessions
   // @Router.validate(z.object({ author: z.string().optional() }))
   async getPosts(session: SessionDoc, author?: string) {
     const user = Sessioning.isLoggedIn(session) ? Sessioning.getUser(session) : undefined;
@@ -176,43 +177,45 @@ class Routes {
     return { msg: `${postDeletion.msg}\n${linkDeletion.msg}` };
   }
 
+  // TODO: fix documentation and `Commenting` to no longer take in author and also not return all comments
+
   /**
-   * Get all comments, redacting all unlinked authors that are not the user.
+   * Get all comments of an item with `itemId`, redacting all unlinked authors that are not the user.
    * Optionally, filter by `author`.
    * @param session The session of the user
    * @param [author] The username of the user to filter by. Also filter by existing `author`-comment
    * links if user is not `author`.
    * @returns An array of comments, filtered and redacted if necessary
    */
-  @Router.get("/comments")
-  // @Router.validate(z.object({ author: z.string().optional() }))
-  async getComments(session: SessionDoc, author?: string) {
+  @Router.get("/items/:itemId/comments")
+  // TODO: create validating to check for itemId
+  async getItemComments(session: SessionDoc, itemId: string, author?: string) {
     const user = Sessioning.isLoggedIn(session) ? Sessioning.getUser(session) : undefined;
+    const itemOid = new ObjectId(itemId);
+    const comments = await Commenting.getByItem(itemOid);
 
     if (author) {
       const authorOid = (await Authing.getUserByUsername(author))._id;
-      const authorComments = await Commenting.getByAuthor(authorOid);
+      const authorComments = comments.filter((comment) => comment.author.equals(authorOid));
       const authorCommentsFormatted = await Responses.comments(authorComments);
       return user && user.equals(authorOid)
         ? authorCommentsFormatted
         : (await Promise.all(authorCommentsFormatted.map(async (comment) => ((await Linking.hasLink(authorOid, comment._id)) ? comment : null)))).filter((c) => c !== null);
     }
 
-    const allComments = await Commenting.getComments();
-    const allCommentsFormatted = await Responses.comments(allComments);
+    const commentsFormatted = await Responses.comments(comments);
     return await Promise.all(
-      allCommentsFormatted.map(async (comment, i) =>
-        (user && user.equals(allComments[i].author)) || (await Linking.hasLink(allComments[i].author, comment._id)) ? comment : Commenting.redactAuthor(comment),
-      ),
+      commentsFormatted.map(async (comment, i) => ((user && user.equals(comments[i].author)) || (await Linking.hasLink(comments[i].author, comment._id)) ? comment : Commenting.redactAuthor(comment))),
     );
   }
 
-  @Router.post("/comments")
-  async createComment(session: SessionDoc, isLinked: string, postId: string, content: string) {
-    const post = new ObjectId(postId);
-    await Posting.assertPostExists(post);
+  @Router.post("/items/:itemId/comments")
+  async createComment(session: SessionDoc, itemId: string, isLinked: string, content: string) {
+    const itemOid = new ObjectId(itemId);
+    // TODO: check if post/comment exists
+    // await Posting.assertPostExists(itemOid);
     const user = Sessioning.getUser(session);
-    const commentCreation = await Commenting.create(user, post, content);
+    const commentCreation = await Commenting.create(user, itemOid, content);
     if (isLinked === "true") {
       const linkCreation = await Linking.link(user, commentCreation.comment._id);
       return { msg: `${commentCreation.msg}\n${linkCreation.msg}`, comment: await Responses.comment(commentCreation.comment), link: await Responses.link(linkCreation.link) };

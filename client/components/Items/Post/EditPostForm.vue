@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { fetchy } from "@/utils/fetchy";
+import { formatDate } from "@/utils/formatDate";
 import { ref } from "vue";
-import { fetchy } from "../../utils/fetchy";
-import { formatDate } from "../../utils/formatDate";
 
 const props = defineProps(["post"]);
 const content = ref(props.post.content);

@@ -49,6 +49,7 @@ export default class TrackingConcept {
    *   - `sort`: A field to sort by (score or date)
    */
   async getData(user?: ObjectId, date?: Date, dateRange?: [Date, Date], sort?: SortOptions) {
+    // TODO: create custom error to be thrown if both date and dateRange are provided
     const query: Record<string, unknown> = {};
     if (user) query.user = user;
     if (date) query.date = date;

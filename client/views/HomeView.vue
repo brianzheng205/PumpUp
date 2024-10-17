@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PostListComponent from "@/components/Post/PostListComponent.vue";
+import PostListComponent from "@/components/Items/Post/PostListComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 

@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
+import { fetchy } from "@/utils/fetchy";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
-import { fetchy } from "../../utils/fetchy";
+import { onBeforeMount, ref } from "vue";
 
 const props = defineProps(["post"]);
-const emit = defineEmits(["editPost", "refreshPosts"]);
+const emit = defineEmits(["editPost", "refreshPosts", "commentPost"]);
 const { currentUsername } = storeToRefs(useUserStore());
+
+const comments = ref<Array<Record<string, string>>>([]);
 
 const deletePost = async () => {
   try {
@@ -16,6 +19,27 @@ const deletePost = async () => {
   }
   emit("refreshPosts");
 };
+
+const getComments = async () => {
+  try {
+    const res = await fetchy(`/api/items/${props.post._id}/comments`, "GET");
+    comments.value = res;
+  } catch {
+    return;
+  }
+};
+
+const commentPost = () => {
+  emit("commentPost", props.post._id);
+};
+
+const commentComment = (commentId: string) => {
+  emit("commentPost", props.post._id, commentId);
+};
+
+onBeforeMount(async () => {
+  await getComments();
+});
 </script>
 
 <template>
@@ -29,6 +53,13 @@ const deletePost = async () => {
     <article class="timestamp">
       <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
       <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
+    </article>
+    <button class="btn-small pure-button" @click="commentPost">Comment</button>
+  </div>
+  <div v-if="comments.length > 0">
+    <h3>Comments:</h3>
+    <article v-for="comment in comments" :key="comment._id">
+      <PostComponent :post="comment" @editPost="emit('editPost', comment._id)" @refreshPosts="emit('refreshPosts')" @commentPost="commentComment(comment._id)" />
     </article>
   </div>
 </template>
