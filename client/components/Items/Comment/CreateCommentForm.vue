@@ -2,19 +2,27 @@
 import { fetchy } from "@/utils/fetchy";
 import { ref } from "vue";
 
-const props = defineProps(["itemId"]);
+const props = defineProps({
+  itemId: {
+    type: String,
+    required: true,
+  },
+});
+const emit = defineEmits(["refreshComments", "setEditing"]);
 
 const content = ref("");
-const emit = defineEmits(["refreshComments"]);
 
 // TODO: add isLinked to body
 const createComment = async (content: string) => {
   try {
-    await fetchy(`/api/items/${props.itemId}/comments`, "POST", { body: { content } });
-  } catch {
+    await fetchy(`/api/items/${props.itemId}/comments`, "POST", {
+      body: { content },
+    });
+  } catch (_) {
     return;
   }
   emit("refreshComments");
+  emit("setEditing");
   emptyForm();
 };
 
@@ -27,26 +35,9 @@ const emptyForm = () => {
   <form @submit.prevent="createComment(content)">
     <label for="content">Comment Contents:</label>
     <textarea id="content" v-model="content" placeholder="Create a comment!" required></textarea>
-    <button type="submit" class="pure-button-primary pure-button">Create Comment</button>
+    <menu>
+      <li><button class="pure-button-primary pure-button" type="submit">Create Comment</button></li>
+      <li><button class="pure-button" @click.prevent="emit('setEditing')">Cancel</button></li>
+    </menu>
   </form>
 </template>
-
-<style scoped>
-form {
-  background-color: var(--base-bg);
-  border-radius: 1em;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  padding: 1em;
-}
-
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  height: 6em;
-  padding: 0.5em;
-  border-radius: 4px;
-  resize: none;
-}
-</style>

@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import CreatePostForm from "@/components/Items/Post/CreatePostForm.vue";
-import EditPostForm from "@/components/Items/Post/EditPostForm.vue";
-import PostComponent from "@/components/Items/Post/PostComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-import SearchPostForm from "./SearchPostForm.vue";
+import SearchItemForm from "../SearchItemForm.vue";
+import CreatePostForm from "./CreatePostForm.vue";
+import EditPostForm from "./EditPostForm.vue";
+import Post from "./Post.vue";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
-let posts = ref<Array<Record<string, string>>>([]);
-let editing = ref("");
-let searchAuthor = ref("");
+const posts = ref<Array<Record<string, string>>>([]);
+const editing = ref("");
+const searchAuthor = ref("");
 
 async function getPosts(author?: string) {
   let query: Record<string, string> = author !== undefined ? { author } : {};
@@ -45,11 +45,11 @@ onBeforeMount(async () => {
   <div class="row">
     <h2 v-if="!searchAuthor">Posts:</h2>
     <h2 v-else>Posts by {{ searchAuthor }}:</h2>
-    <SearchPostForm legendText="Search By Author" @getPostsByAuthor="getPosts" />
+    <SearchItemForm legendText="Search By Author" @getItemsByUser="getPosts" />
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
-      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+      <Post v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
     </article>
   </section>

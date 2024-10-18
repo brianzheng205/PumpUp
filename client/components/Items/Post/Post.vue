@@ -4,12 +4,16 @@ import { fetchy } from "@/utils/fetchy";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
+import CommentList from "../Comment/CommentList.vue";
+import CreateCommentForm from "../Comment/CreateCommentForm.vue";
 
 const props = defineProps(["post"]);
-const emit = defineEmits(["editPost", "refreshPosts", "commentPost"]);
+const emit = defineEmits(["editPost", "refreshPosts"]);
+
 const { currentUsername } = storeToRefs(useUserStore());
 
 const comments = ref<Array<Record<string, string>>>([]);
+const editing = ref("");
 
 const deletePost = async () => {
   try {
@@ -20,25 +24,22 @@ const deletePost = async () => {
   emit("refreshPosts");
 };
 
-const getComments = async () => {
+const getPostComments = async (author?: string) => {
+  const query: Record<string, string> = author !== undefined ? { author } : {};
   try {
-    const res = await fetchy(`/api/items/${props.post._id}/comments`, "GET");
-    comments.value = res;
+    comments.value = await fetchy(`/api/items/${props.post._id}/comments`, "GET", { query });
   } catch {
     return;
   }
 };
 
-const commentPost = () => {
-  emit("commentPost", props.post._id);
-};
-
-const commentComment = (commentId: string) => {
-  emit("commentPost", props.post._id, commentId);
+const setEditing = (itemId: string) => {
+  console.log(itemId);
+  editing.value = itemId;
 };
 
 onBeforeMount(async () => {
-  await getComments();
+  await getPostComments();
 });
 </script>
 
@@ -54,14 +55,10 @@ onBeforeMount(async () => {
       <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
       <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
     </article>
-    <button class="btn-small pure-button" @click="commentPost">Comment</button>
+    <button v-if="editing !== props.post._id" class="btn-small pure-button" @click="setEditing(props.post._id)">Comment</button>
+    <CreateCommentForm v-else :itemId="props.post._id" @refreshComments="getPostComments" @setEditing="setEditing" />
   </div>
-  <div v-if="comments.length > 0">
-    <h3>Comments:</h3>
-    <article v-for="comment in comments" :key="comment._id">
-      <PostComponent :post="comment" @editPost="emit('editPost', comment._id)" @refreshPosts="emit('refreshPosts')" @commentPost="commentComment(comment._id)" />
-    </article>
-  </div>
+  <CommentList :comments="comments" :editing="editing" legendText="Search By Author" @refreshComments="getPostComments" @setEditing="setEditing" />
 </template>
 
 <style scoped>

@@ -5,7 +5,6 @@ const props = defineProps(["legendText"]);
 
 const author = ref("");
 const emit = defineEmits(["getItemsByUser"]);
-console.log(props.legendText);
 </script>
 
 <template>
