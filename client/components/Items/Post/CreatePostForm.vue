@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
 import { ref } from "vue";
+import LinkAtCreation from "../../Link/LinkAtCreation.vue";
 
-const content = ref("");
 const emit = defineEmits(["refreshPosts"]);
 
-// TODO: add isLinked to body
-const createPost = async (content: string) => {
+const isLinked = ref<boolean | null>(null);
+const content = ref("");
+
+const createPost = async (content: string, isLinked: boolean) => {
   try {
     await fetchy("/api/posts", "POST", {
-      body: { content },
+      body: { content, isLinked: isLinked.toString() },
     });
   } catch (_) {
     return;
@@ -20,14 +22,20 @@ const createPost = async (content: string) => {
 
 const emptyForm = () => {
   content.value = "";
+  isLinked.value = null;
+};
+
+const setIsLinked = (value: boolean) => {
+  isLinked.value = value;
 };
 </script>
 
 <template>
-  <form @submit.prevent="createPost(content)">
+  <LinkAtCreation @setIsLinked="setIsLinked" />
+  <form @submit.prevent="content.trim() !== '' && isLinked !== null && createPost(content, isLinked)">
     <label for="content">Post Contents:</label>
     <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
-    <button type="submit" class="pure-button-primary pure-button">Create Post</button>
+    <button type="submit" class="pure-button-primary pure-button" :disabled="content.trim() === '' || isLinked === null">Create Post</button>
   </form>
 </template>
 
