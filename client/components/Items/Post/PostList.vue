@@ -27,7 +27,7 @@ async function getPosts(author?: string) {
   posts.value = postResults;
 }
 
-function updateEditing(id: string) {
+function setEditing(id: string) {
   editing.value = id;
 }
 
@@ -49,8 +49,8 @@ onBeforeMount(async () => {
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
-      <Post v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
-      <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+      <Post v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="setEditing" />
+      <EditPostForm v-else :post="post" @refreshPosts="getPosts" @setEditing="setEditing" />
     </article>
   </section>
   <p v-else-if="loaded">No posts found</p>
