@@ -4,6 +4,7 @@ import { fetchy } from "@/utils/fetchy";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
+import ToggleLink from "../../Link/ToggleLink.vue";
 import CommentList from "../Comment/CommentList.vue";
 import CreateCommentForm from "../Comment/CreateCommentForm.vue";
 
@@ -13,6 +14,7 @@ const emit = defineEmits(["editPost", "refreshPosts"]);
 const { currentUsername } = storeToRefs(useUserStore());
 
 const comments = ref<Array<Record<string, string>>>([]);
+const link = ref<Record<string, string> | null>(null);
 const editing = ref("");
 
 const deletePost = async () => {
@@ -34,12 +36,41 @@ const getPostComments = async (author?: string) => {
 };
 
 const setEditing = (itemId: string) => {
-  console.log(itemId);
   editing.value = itemId;
+};
+
+const getPostLink = async () => {
+  try {
+    link.value = await fetchy(`/api/links`, "GET", { query: { itemId: props.post._id } });
+  } catch {
+    return;
+  }
+};
+
+const createPostLink = async () => {
+  try {
+    link.value = await fetchy(`/api/links/posts`, "POST", { body: { postId: props.post._id } });
+  } catch {
+    return;
+  }
+};
+
+const deletePostLink = async () => {
+  if (link.value === null) {
+    return;
+  }
+
+  try {
+    await fetchy(`/api/links/posts/${link.value._id}`, "DELETE");
+    link.value = null;
+  } catch {
+    return;
+  }
 };
 
 onBeforeMount(async () => {
   await getPostComments();
+  await getPostLink();
 });
 </script>
 
@@ -50,6 +81,7 @@ onBeforeMount(async () => {
     <menu v-if="props.post.author == currentUsername">
       <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
       <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
+      <li><ToggleLink :linkExists="link !== null" @createLink="createPostLink" @deleteLink="deletePostLink" /></li>
     </menu>
     <article class="timestamp">
       <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>

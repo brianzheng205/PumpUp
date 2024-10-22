@@ -19,7 +19,6 @@ const deleteComment = async () => {
 };
 
 const editComment = async () => {
-  console.log(props.comment._id);
   emit("setEditing", props.comment._id);
 };
 </script>

@@ -34,6 +34,10 @@ export default class LinkingConcept {
     return await this.links.readMany({ user });
   }
 
+  async getByUserItem(user: ObjectId, item: ObjectId) {
+    return await this.links.readOne({ user, item });
+  }
+
   async hasLink(user: ObjectId, item: ObjectId) {
     const link = await this.links.readOne({ user, item });
     return link ? true : false;

@@ -436,15 +436,22 @@ class Routes {
     return { msg: `${membershipDeletion.msg}\n${linkDeletion.msg}` };
   }
 
+  // @Router.get("/links")
+  // @Router.validate(z.object({ user: z.string().optional() }))
+  // async getLinks(user?: string) {
+  //   if (user) {
+  //     const userOid = (await Authing.getUserByUsername(user))._id;
+  //     return await Responses.links(await Linking.getByUser(userOid));
+  //   } else {
+  //     return await Responses.links(await Linking.getLinks());
+  //   }
+  // }
+
   @Router.get("/links")
-  @Router.validate(z.object({ user: z.string().optional() }))
-  async getLinks(user?: string) {
-    if (user) {
-      const userOid = (await Authing.getUserByUsername(user))._id;
-      return await Responses.links(await Linking.getByUser(userOid));
-    } else {
-      return await Responses.links(await Linking.getLinks());
-    }
+  async getUserItemLink(session: SessionDoc, itemId: string) {
+    const user = Sessioning.getUser(session);
+    const link = await Linking.getByUserItem(user, new ObjectId(itemId));
+    return link ? await Responses.link(link) : link;
   }
 
   @Router.get("/links/posts")
