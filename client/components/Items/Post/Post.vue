@@ -56,9 +56,7 @@ const createPostLink = async () => {
 };
 
 const deletePostLink = async () => {
-  if (link.value === null) {
-    return;
-  }
+  if (link.value === null) return;
 
   try {
     await fetchy(`/api/links/posts/${link.value._id}`, "DELETE");
