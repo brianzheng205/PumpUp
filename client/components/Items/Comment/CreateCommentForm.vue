@@ -14,7 +14,6 @@ const emit = defineEmits(["refreshComments", "setEditing"]);
 const isLinked = ref<boolean | null>(null);
 const content = ref("");
 
-// TODO: add isLinked to body
 const createComment = async (content: string, isLinked: boolean) => {
   try {
     await fetchy(`/api/items/${props.itemId}/comments`, "POST", {

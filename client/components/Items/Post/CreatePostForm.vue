@@ -1,9 +1,8 @@
 <script setup lang="ts">
+import router from "@/router";
 import { fetchy } from "@/utils/fetchy";
 import { ref } from "vue";
 import LinkAtCreation from "../../Link/LinkAtCreation.vue";
-
-const emit = defineEmits(["refreshPosts"]);
 
 const isLinked = ref<boolean | null>(null);
 const content = ref("");
@@ -16,13 +15,7 @@ const createPost = async (content: string, isLinked: boolean) => {
   } catch (_) {
     return;
   }
-  emit("refreshPosts");
-  emptyForm();
-};
-
-const emptyForm = () => {
-  content.value = "";
-  isLinked.value = null;
+  void router.push({ name: "Home" });
 };
 
 const setIsLinked = (value: boolean) => {
@@ -31,30 +24,10 @@ const setIsLinked = (value: boolean) => {
 </script>
 
 <template>
-  <LinkAtCreation @setIsLinked="setIsLinked" />
-  <form @submit.prevent="content.trim() !== '' && isLinked !== null && createPost(content, isLinked)">
-    <label for="content">Post Contents:</label>
+  <form class="create-form" @submit.prevent="content.trim() !== '' && isLinked !== null && createPost(content, isLinked)">
+    <h2>Post</h2>
+    <LinkAtCreation @setIsLinked="setIsLinked" />
     <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
     <button type="submit" class="pure-button-primary pure-button" :disabled="content.trim() === '' || isLinked === null">Create Post</button>
   </form>
 </template>
-
-<style scoped>
-form {
-  background-color: var(--base-bg);
-  border-radius: 1em;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  padding: 1em;
-}
-
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  height: 6em;
-  padding: 0.5em;
-  border-radius: 4px;
-  resize: none;
-}
-</style>

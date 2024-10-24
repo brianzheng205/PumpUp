@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
-import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import EditContentForm from "../EditContentForm.vue";
 import SearchItemForm from "../SearchItemForm.vue";
-import CreatePostForm from "./CreatePostForm.vue";
 import Post from "./Post.vue";
-
-const { isLoggedIn } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
 const posts = ref<Array<Record<string, string>>>([]);
@@ -48,10 +43,6 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <section v-if="isLoggedIn">
-    <h2>Create a post:</h2>
-    <CreatePostForm @refreshPosts="getPosts" />
-  </section>
   <div class="row">
     <h2 v-if="!searchAuthor">Posts:</h2>
     <h2 v-else>Posts by {{ searchAuthor }}:</h2>
@@ -97,7 +88,6 @@ article {
 .row {
   display: flex;
   justify-content: space-between;
-  margin: 0 auto;
   max-width: 60em;
 }
 </style>

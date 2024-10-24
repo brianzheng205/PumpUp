@@ -13,11 +13,11 @@ const { currentUsername } = storeToRefs(useUserStore());
 
 // const comments = ref<Array<Record<string, string>>>([]); // TODO: change to data instead
 const link = ref<Record<string, string> | null>(null);
-const editing = ref("");
+// const editing = ref("");
 
 const deleteCompetition = async () => {
   try {
-    await fetchy(`/api/competitions/${props.competition._id}`, "DELETE");
+    await fetchy(`/api/competitions/${props.competition.name}`, "DELETE");
   } catch {
     return;
   }
@@ -33,9 +33,9 @@ const deleteCompetition = async () => {
 //   }
 // };
 
-const setEditing = (itemId: string) => {
-  editing.value = itemId;
-};
+// const setEditing = (itemId: string) => {
+//   editing.value = itemId;
+// };
 
 const getCompetitionLink = async () => {
   try {
@@ -73,9 +73,10 @@ onBeforeMount(async () => {
 <template>
   <p class="title">{{ props.competition.name }}</p>
   <p v-if="props.competition.owner">Created by {{ props.competition.owner }}</p>
+  <p>End Date: {{ new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(props.competition.endDate)) }}</p>
   <div class="base">
     <menu v-if="props.competition.owner == currentUsername">
-      <li><button class="btn-small pure-button" @click="emit('editCompetition', props.competition._id)">Edit</button></li>
+      <!-- <li><button class="btn-small pure-button" @click="emit('editCompetition', props.competition._id)">Edit</button></li> -->
       <li><button class="button-error btn-small pure-button" @click="deleteCompetition">Delete</button></li>
       <li><ToggleLink :linkExists="link !== null" @createLink="createCompetitionLink" @deleteLink="deleteCompetitionLink" /></li>
     </menu>
