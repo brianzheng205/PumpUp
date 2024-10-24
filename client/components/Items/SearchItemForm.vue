@@ -2,9 +2,9 @@
 import { ref } from "vue";
 
 const props = defineProps(["legendText"]);
+const emit = defineEmits(["getItemsByUser"]);
 
 const author = ref("");
-const emit = defineEmits(["getItemsByUser"]);
 </script>
 
 <template>

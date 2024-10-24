@@ -5,6 +5,7 @@ import { useUserStore } from "@/stores/user";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import SearchView from "../views/SearchView.vue";
 import SettingView from "../views/SettingView.vue";
 
 const router = createRouter({
@@ -14,6 +15,12 @@ const router = createRouter({
       path: "/",
       name: "Home",
       component: HomeView,
+    },
+    {
+      path: "/search",
+      name: "Search",
+      component: SearchView,
+      meta: { requiresAuth: true },
     },
     {
       path: "/setting",
