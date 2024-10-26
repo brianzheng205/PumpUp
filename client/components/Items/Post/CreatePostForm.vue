@@ -26,7 +26,7 @@ const setIsLinked = (value: boolean) => {
 <template>
   <form class="create-form" @submit.prevent="content.trim() !== '' && isLinked !== null && createPost(content, isLinked)">
     <h2>Post</h2>
-    <LinkAtCreation @setIsLinked="setIsLinked" />
+    <LinkAtCreation :isLinked="null" @setIsLinked="setIsLinked" />
     <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
     <button type="submit" class="pure-button-primary pure-button" :disabled="content.trim() === '' || isLinked === null">Create Post</button>
   </form>

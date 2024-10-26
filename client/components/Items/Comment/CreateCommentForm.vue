@@ -37,9 +37,9 @@ const setIsLinked = (value: boolean) => {
 </script>
 
 <template>
-  <LinkAtCreation @setIsLinked="setIsLinked" />
   <form @submit.prevent="isLinked !== null && content.trim() !== '' && createComment(content, isLinked)">
     <label for="content">Comment Contents:</label>
+    <LinkAtCreation :isLinked="null" @setIsLinked="setIsLinked" />
     <textarea id="content" v-model="content" placeholder="Create a comment!" required></textarea>
     <menu>
       <li><button class="pure-button-primary pure-button" type="submit" :disabled="content.trim() === '' || isLinked === null">Create Comment</button></li>
