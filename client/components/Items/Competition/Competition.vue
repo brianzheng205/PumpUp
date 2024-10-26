@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useEditStore } from "@/stores/editing";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { formatDate } from "@/utils/formatDate";
@@ -6,14 +7,17 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import ToggleLink from "../../Link/ToggleLink.vue";
 
-const props = defineProps(["competition"]);
-const emit = defineEmits(["editCompetition", "refreshCompetitions"]);
+const props = defineProps<{
+  competition: any;
+}>();
+const emit = defineEmits<{
+  (e: "refreshCompetitions", author?: string): void;
+}>();
 
+const editStore = useEditStore();
 const { currentUsername } = storeToRefs(useUserStore());
 
-// const comments = ref<Array<Record<string, string>>>([]); // TODO: change to data instead
 const link = ref<Record<string, string> | null>(null);
-// const editing = ref("");
 
 const deleteCompetition = async () => {
   try {
@@ -23,19 +27,6 @@ const deleteCompetition = async () => {
   }
   emit("refreshCompetitions");
 };
-
-// const getCompetitionComments = async (owner?: string) => {
-//   const query: Record<string, string> = owner !== undefined ? { owner } : {};
-//   try {
-//     comments.value = await fetchy(`/api/items/${props.competition._id}/comments`, "GET", { query });
-//   } catch {
-//     return;
-//   }
-// };
-
-// const setEditing = (itemId: string) => {
-//   editing.value = itemId;
-// };
 
 const getCompetitionLink = async () => {
   try {
@@ -65,7 +56,6 @@ const deleteCompetitionLink = async () => {
 };
 
 onBeforeMount(async () => {
-  // await getCompetitionComments();
   await getCompetitionLink();
 });
 </script>
@@ -76,7 +66,7 @@ onBeforeMount(async () => {
   <p>End Date: {{ new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(props.competition.endDate)) }}</p>
   <div class="base">
     <menu v-if="props.competition.owner == currentUsername">
-      <!-- <li><button class="btn-small pure-button" @click="emit('editCompetition', props.competition._id)">Edit</button></li> -->
+      <li><button class="btn-small pure-button" @click="editStore.setEditing(props.competition._id)">Edit</button></li>
       <li><button class="button-error btn-small pure-button" @click="deleteCompetition">Delete</button></li>
       <li><ToggleLink :linkExists="link !== null" @createLink="createCompetitionLink" @deleteLink="deleteCompetitionLink" /></li>
     </menu>

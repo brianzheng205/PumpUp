@@ -18,9 +18,7 @@ async function getData(username?: string, date?: string, dateRange?: string) {
   if (dateRange) query.dateRange = dateRange;
 
   try {
-    console.log("before");
     data.value = await fetchy("/api/data", "GET", { query });
-    console.log(data.value);
   } catch (_) {
     return;
   }

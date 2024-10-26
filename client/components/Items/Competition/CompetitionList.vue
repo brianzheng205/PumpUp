@@ -1,12 +1,17 @@
 <script setup lang="ts">
+import { useEditStore } from "@/stores/editing";
 import { fetchy } from "@/utils/fetchy";
+import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import SearchItemForm from "../SearchItemForm.vue";
 import Competition from "./Competition.vue";
+import EditCompetitionForm from "./EditCompetitionForm.vue";
+
+const editStore = useEditStore();
+const { editingId } = storeToRefs(editStore);
 
 const loaded = ref(false);
 const competitions = ref<Array<Record<string, string>>>([]);
-const editing = ref("");
 const searchUser = ref("");
 
 async function getCompetitions(author?: string) {
@@ -20,21 +25,6 @@ async function getCompetitions(author?: string) {
   searchUser.value = author ? author : "";
   competitions.value = competitionResults;
 }
-
-function setEditing(id: string) {
-  editing.value = id;
-}
-
-// TODO: implement editing
-// const editCompetition = async (competitionId: string, content: string) => {
-//   try {
-//     await fetchy(`/api/competitions/${competitionId}`, "PATCH", { body: { content } });
-//   } catch (e) {
-//     return;
-//   }
-//   editing.value = "";
-//   await getCompetitions();
-// };
 
 // TODO: make each article clickable
 
@@ -52,8 +42,8 @@ onBeforeMount(async () => {
   </div>
   <section class="competitions" v-if="loaded && competitions.length !== 0">
     <article v-for="competition in competitions" :key="competition._id">
-      <Competition v-if="editing !== competition._id" :competition="competition" @refreshCompetitions="getCompetitions" @editCompetition="setEditing" />
-      <!-- <EditContentForm v-else :contentContainer="competition" @editContainer="(content: string) => editCompetition(competition._id, content)" @setEditing="setEditing" /> -->
+      <Competition v-if="editingId !== competition._id" :competition="competition" @refreshCompetitions="getCompetitions" />
+      <EditCompetitionForm v-else :competition="competition" @refreshCompetitions="getCompetitions" />
     </article>
   </section>
   <p v-else-if="loaded">No competitions found</p>
