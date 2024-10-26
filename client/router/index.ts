@@ -6,6 +6,7 @@ import CompetitionsView from "../views/CompetitionsView.vue";
 import CreateView from "../views/CreateView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
+import LogView from "../views/LogView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import SettingView from "../views/SettingView.vue";
 
@@ -27,6 +28,12 @@ const router = createRouter({
       path: "/create",
       name: "Create",
       component: CreateView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/log",
+      name: "Log",
+      component: LogView,
       meta: { requiresAuth: true },
     },
     {

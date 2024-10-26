@@ -292,15 +292,16 @@ class Routes {
     return { msg: `${data.msg}\nAll competition data successfully logged!`, data: await Responses.d(data.data) };
   }
 
-  @Router.patch("/data/:id")
-  async updateData(session: SessionDoc, id: string, date?: string, score?: string) {
-    const user = Sessioning.getUser(session);
-    const oid = new ObjectId(id);
-    await Tracking.assertUserIsOwner(oid, user);
-    const dateObj = date ? new Date(date) : undefined;
-    const scoreParsed = score ? parseInt(score) : undefined;
-    return await Tracking.update(oid, dateObj, scoreParsed);
-  }
+  // TODO: remove or implement by updating membership data
+  // @Router.patch("/data/:id")
+  // async updateData(session: SessionDoc, id: string, date?: string, score?: string) {
+  //   const user = Sessioning.getUser(session);
+  //   const oid = new ObjectId(id);
+  //   await Tracking.assertUserIsOwner(oid, user);
+  //   const dateObj = date ? new Date(date) : undefined;
+  //   const scoreParsed = score ? parseInt(score) : undefined;
+  //   return await Tracking.update(oid, dateObj, scoreParsed);
+  // }
 
   @Router.delete("/data/:id")
   async deleteData(session: SessionDoc, id: string) {

@@ -5,6 +5,7 @@ import { ref } from "vue";
 const props = defineProps(["contentContainer"]);
 const content = ref(props.contentContainer.content);
 const emit = defineEmits(["editContainer", "setEditing"]);
+// TODO: allow editing of all info
 </script>
 
 <template>
