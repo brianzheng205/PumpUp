@@ -5,7 +5,6 @@ import { fetchy } from "@/utils/fetchy";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-import ToggleLink from "../../Link/ToggleLink.vue";
 
 const props = defineProps<{
   competition: any;
@@ -36,25 +35,6 @@ const getCompetitionLink = async () => {
   }
 };
 
-const createCompetitionLink = async () => {
-  try {
-    link.value = await fetchy(`/api/links/competitions`, "POST", { body: { competitionId: props.competition._id } });
-  } catch {
-    return;
-  }
-};
-
-const deleteCompetitionLink = async () => {
-  if (link.value === null) return;
-
-  try {
-    await fetchy(`/api/links/competitions/${link.value._id}`, "DELETE");
-    link.value = null;
-  } catch {
-    return;
-  }
-};
-
 onBeforeMount(async () => {
   await getCompetitionLink();
 });
@@ -68,7 +48,6 @@ onBeforeMount(async () => {
     <menu v-if="props.competition.owner == currentUsername">
       <li><button class="btn-small pure-button" @click="editStore.setEditing(props.competition._id)">Edit</button></li>
       <li><button class="button-error btn-small pure-button" @click="deleteCompetition">Delete</button></li>
-      <li><ToggleLink :linkExists="link !== null" @createLink="createCompetitionLink" @deleteLink="deleteCompetitionLink" /></li>
     </menu>
     <article class="timestamp">
       <p v-if="props.competition.dateCreated !== props.competition.dateUpdated">Edited on: {{ formatDate(props.competition.dateUpdated) }}</p>
