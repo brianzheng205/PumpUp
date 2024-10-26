@@ -32,9 +32,7 @@ const canCreate = computed(() => name.value.trim() !== "" && endDate.value !== n
 
 watch(
   () => props.initialInfo.isLinked,
-  (newValue) => {
-    isLinked.value = newValue;
-  },
+  (newValue) => (isLinked.value = newValue),
 );
 
 const setIsLinked = (value: boolean) => {

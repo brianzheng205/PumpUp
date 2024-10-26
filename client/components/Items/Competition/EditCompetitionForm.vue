@@ -18,11 +18,10 @@ const initialEndDate = computed(() => new Date(props.competition.endDate));
 const initialIsLinked = ref(false);
 
 const editCompetition = async (name: string, endDate: Date, isLinked: boolean) => {
-  const body: Record<string, string | boolean> = {};
+  const body: Record<string, string | boolean> = { isLinked: isLinked ? "true" : "false" };
 
   if (name !== initialName.value) body.newName = name;
   if (endDate.getTime() !== initialEndDate.value.getTime()) body.endDate = endDate.toString();
-  if (isLinked !== initialIsLinked.value) body.isLinked = isLinked;
 
   try {
     await fetchy(`/api/competitions/${props.competition.name}`, "PATCH", { body });

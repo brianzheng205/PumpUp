@@ -66,12 +66,11 @@ export default class CompetingConcept {
     return competition;
   }
 
-  async update(_id: ObjectId, name?: string, owner?: ObjectId, endDate?: Date) {
+  async update(_id: ObjectId, name?: string, endDate?: Date) {
     await this.assertCompetitionIsActive(_id);
-    await this.assertValidUpdateInfo(_id, name, owner, endDate);
+    await this.assertValidUpdateInfo(_id, name, endDate);
     const update: Partial<CompetitionDoc> = {};
     if (name) update.name = name;
-    if (owner) update.owner = owner;
     if (endDate) update.endDate = endDate;
     await this.competitions.partialUpdateOne({ _id }, update);
     return { msg: "Competition successfully updated!" };
@@ -106,16 +105,9 @@ export default class CompetingConcept {
     if (competition.endDate < new Date()) throw new NotAllowedError(`Competition ${competition.name} has already ended!`);
   }
 
-  private async assertValidUpdateInfo(_id: ObjectId, name?: string, owner?: ObjectId, endDate?: Date) {
+  private async assertValidUpdateInfo(_id: ObjectId, name?: string, endDate?: Date) {
     if (name) await this.assertNameUnique(name);
-    if (owner) await this.assertUserIsNotOwner(owner, _id);
     if (endDate) await this.assertDateIsInFuture(endDate);
-  }
-
-  private async assertUserIsNotOwner(user: ObjectId, competition: ObjectId) {
-    const competitionData = await this.competitions.readOne({ _id: competition });
-    if (!competitionData) throw new NotFoundError(`Competition ${competition} does not exist!`);
-    if (!user.equals(competitionData.owner)) throw new NotAllowedError(`User ${user} is already the owner of ${competition}!`);
   }
 
   private async assertNameUnique(name: string) {

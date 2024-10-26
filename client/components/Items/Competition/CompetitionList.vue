@@ -22,6 +22,7 @@ async function getCompetitions(author?: string) {
   } catch (_) {
     return;
   }
+  console.log(competitionResults);
   searchUser.value = author ? author : "";
   competitions.value = competitionResults;
 }

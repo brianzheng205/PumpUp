@@ -4,7 +4,6 @@ import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
 
 const props = defineProps<{
   competition: any;
@@ -15,8 +14,7 @@ const emit = defineEmits<{
 
 const editStore = useEditStore();
 const { currentUsername } = storeToRefs(useUserStore());
-
-const link = ref<Record<string, string> | null>(null);
+console.log(props.competition.owner, currentUsername.value);
 
 const deleteCompetition = async () => {
   try {
@@ -26,18 +24,6 @@ const deleteCompetition = async () => {
   }
   emit("refreshCompetitions");
 };
-
-const getCompetitionLink = async () => {
-  try {
-    link.value = await fetchy(`/api/links`, "GET", { query: { itemId: props.competition._id } });
-  } catch {
-    return;
-  }
-};
-
-onBeforeMount(async () => {
-  await getCompetitionLink();
-});
 </script>
 
 <template>

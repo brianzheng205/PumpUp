@@ -346,8 +346,8 @@ class Routes {
     const allCompetitions = await Competing.getCompetitions();
     const allCompetitionsFormatted = await Responses.competitions(allCompetitions);
     return await Promise.all(
-      allCompetitionsFormatted.map(async (competition) =>
-        (user && user.equals(competition.owner)) || (await Linking.hasLink((await Authing.getUserByUsername(competition.owner))._id, competition._id))
+      allCompetitionsFormatted.map(async (competition, i) =>
+        (user && user.equals(allCompetitions[i].owner)) || (await Linking.hasLink((await Authing.getUserByUsername(competition.owner))._id, competition._id))
           ? competition
           : Competing.redactOwner(competition),
       ),
@@ -379,13 +379,15 @@ class Routes {
   }
 
   @Router.patch("/competitions/:name")
-  async updateCompetition(session: SessionDoc, name: string, newName?: string, owner?: string, endDate?: string) {
+  async updateCompetition(session: SessionDoc, name: string, newName?: string, endDate?: string, isLinked?: string) {
     const user = Sessioning.getUser(session);
     const oid = (await Competing.getByName(name))._id;
     await Competing.assertUserIsOwner(oid, user);
-    const ownerObj = owner ? new ObjectId(owner) : undefined;
     const endDateObj = endDate ? new Date(endDate) : undefined;
-    return await Competing.update(oid, newName, ownerObj, endDateObj);
+    const competitionUpdate = await Competing.update(oid, newName, endDateObj);
+    const isLinkedBool = isLinked === "true";
+    const linkUpdate = await Linking.update(user, oid, isLinkedBool);
+    return { msg: `${competitionUpdate.msg} ${linkUpdate.msg}` };
   }
 
   @Router.delete("/competitions/:name")

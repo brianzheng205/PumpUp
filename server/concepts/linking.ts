@@ -43,6 +43,13 @@ export default class LinkingConcept {
     return link ? true : false;
   }
 
+  async update(user: ObjectId, item: ObjectId, isLinked: boolean) {
+    const isAlreadyLinked = await this.hasLink(user, item);
+    if (isLinked && !isAlreadyLinked) this.link(user, item);
+    if (!isLinked && isAlreadyLinked) this.unlink(user, item);
+    return { msg: "Link successfully updated!" };
+  }
+
   async delete(_id: ObjectId) {
     await this.links.deleteOne({ _id });
     return { msg: "Item successfully unlinked from user!" };
