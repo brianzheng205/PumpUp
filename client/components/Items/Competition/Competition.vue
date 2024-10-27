@@ -14,7 +14,6 @@ const emit = defineEmits<{
 
 const editStore = useEditStore();
 const { currentUsername } = storeToRefs(useUserStore());
-console.log(props.competition.owner, currentUsername.value);
 
 const deleteCompetition = async () => {
   try {

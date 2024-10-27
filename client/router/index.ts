@@ -2,12 +2,12 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
-import CompetitionsView from "../views/CompetitionsView.vue";
 import CreateView from "../views/CreateView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import LogView from "../views/LogView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import SearchView from "../views/SearchView.vue";
 import SettingView from "../views/SettingView.vue";
 
 const router = createRouter({
@@ -19,9 +19,9 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: "/competitions",
-      name: "Competitions",
-      component: CompetitionsView,
+      path: "/search",
+      name: "Search",
+      component: SearchView,
       meta: { requiresAuth: true },
     },
     {

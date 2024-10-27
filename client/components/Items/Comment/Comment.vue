@@ -72,7 +72,6 @@ onBeforeMount(async () => {
         <p v-if="props.comment.dateCreated !== props.comment.dateUpdated">Edited on: {{ formatDate(props.comment.dateUpdated) }}</p>
         <p v-else>Created on: {{ formatDate(props.comment.dateCreated) }}</p>
       </article>
-      <!-- <button class="btn-small pure-button">Comment</button> -->
     </div>
   </article>
 </template>

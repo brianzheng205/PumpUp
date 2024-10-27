@@ -20,20 +20,8 @@ const props = defineProps({
 });
 const emit = defineEmits(["setEditing", "refreshComments"]);
 
-// TODO: implement commenting on comments
-// const commentsOfComments = reactive(new Map(props.comments.map((comment) => [comment._id, [] as Array<Record<string, string>>])));
 const loading = ref(false); // TODO: implement
 const searchAuthor = ref("");
-
-// const getCommentsOfComment = async (commentId: string, author?: string) => {
-//   const query: Record<string, string> = author !== undefined ? { author } : {};
-//   try {
-//     const res = await fetchy(`/api/items/${commentId}/comments`, "GET", { query });
-//     commentsOfComments.set(commentId, res);
-//   } catch {
-//     return;
-//   }
-// };
 
 const editComment = async (id: string, content: string) => {
   try {
