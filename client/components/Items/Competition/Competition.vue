@@ -2,7 +2,7 @@
 import { useEditStore } from "@/stores/editing";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
-import { formatDateTime } from "@/utils/formatDate";
+import { formatDate, formatDateTime } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 
@@ -74,7 +74,7 @@ onBeforeMount(async () => {
 <template>
   <p class="title">{{ props.competition.name }}</p>
   <p v-if="props.competition.owner">Created by {{ props.competition.owner }}</p>
-  <p>End Date: {{ formatDateTime(props.competition.endDate) }}</p>
+  <p>End Date: {{ formatDate(props.competition.endDate) }}</p>
   <p>Members:</p>
   <ul>
     <li v-for="member in memberScores">{{ member.username }} : {{ member.highScore }}</li>

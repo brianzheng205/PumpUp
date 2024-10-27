@@ -7,4 +7,4 @@ import moment from "moment";
  */
 export const formatDateTime = (date: string): string => moment(date).format("MMMM Do YYYY, h:mm:ss a");
 
-export const formatDate = (date: string): string => moment(date).format("MMMM Do YYYY");
+export const formatDate = (date: string): string => moment(date).utc().format("MMMM Do YYYY");

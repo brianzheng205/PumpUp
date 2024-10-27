@@ -2,6 +2,10 @@
 import { fetchy } from "@/utils/fetchy";
 import { computed, ref } from "vue";
 
+const emit = defineEmits<{
+  (e: "refreshData"): void;
+}>();
+
 const score = ref<number | null>(null);
 const date = ref<Date | null>(null);
 
@@ -17,6 +21,7 @@ const logWorkout = async () => {
   } catch (_) {
     return;
   }
+  emit("refreshData");
 };
 </script>
 
