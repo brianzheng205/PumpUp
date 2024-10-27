@@ -439,16 +439,21 @@ class Routes {
     return { msg: `${membershipDeletion.msg}\n${linkDeletion.msg}` };
   }
 
-  // @Router.get("/links")
-  // @Router.validate(z.object({ user: z.string().optional() }))
-  // async getLinks(user?: string) {
-  //   if (user) {
-  //     const userOid = (await Authing.getUserByUsername(user))._id;
-  //     return await Responses.links(await Linking.getByUser(userOid));
-  //   } else {
-  //     return await Responses.links(await Linking.getLinks());
-  //   }
-  // }
+  @Router.get("/competitions/:id/scores")
+  async getCompetitionHighScores(session: SessionDoc, id: string) {
+    const user = Sessioning.isLoggedIn(session) ? Sessioning.getUser(session) : undefined;
+    const competitionOid = new ObjectId(id);
+    const memberships = await Joining.getMemberships(competitionOid);
+    const linkedMembers = (await Promise.all(memberships.map(async (m) => ((user && user.equals(m.user)) || (await Linking.hasLink(m.user, competitionOid)) ? m : null)))).filter((m) => m !== null);
+    const data = await Promise.all(
+      linkedMembers.map(async (m) => {
+        const dataDocs = await Tracking.getData(m.user, undefined, undefined, SortOptions.SCORE);
+        const highScore = dataDocs.length > 0 ? Math.max(...dataDocs.map((d) => d.score)) : 0;
+        return { username: (await Authing.getUserById(m.user)).username, highScore };
+      }),
+    );
+    return data;
+  }
 
   @Router.get("/links")
   async getUserItemLink(session: SessionDoc, itemId: string) {

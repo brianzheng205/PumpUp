@@ -18,6 +18,7 @@ const editStore = useEditStore();
 const { currentUsername } = storeToRefs(useUserStore());
 
 const members = ref<Set<string>>(new Set());
+const memberScores = ref<Record<string, string>[]>([]);
 
 const deleteCompetition = async () => {
   try {
@@ -55,8 +56,18 @@ const leaveCompetition = async () => {
   getCompetitionMembers();
 };
 
+// /competitions/:name/scores
+const getHighScores = async () => {
+  try {
+    memberScores.value = await fetchy(`/api/competitions/${props.competition._id}/scores`, "GET");
+  } catch {
+    return;
+  }
+};
+
 onBeforeMount(async () => {
   await getCompetitionMembers();
+  await getHighScores();
 });
 </script>
 
@@ -66,7 +77,7 @@ onBeforeMount(async () => {
   <p>End Date: {{ formatDateTime(props.competition.endDate) }}</p>
   <p>Members:</p>
   <ul>
-    <li v-for="member in members">{{ member }}</li>
+    <li v-for="member in memberScores">{{ member.username }} : {{ member.highScore }}</li>
   </ul>
   <div class="base">
     <menu v-if="props.competition.owner == currentUsername">
