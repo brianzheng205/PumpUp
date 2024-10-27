@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
-import { formatDate } from "@/utils/formatDate";
+import { formatDateTime } from "@/utils/formatDate";
 import { Status } from "@/utils/types";
 
 const props = defineProps<{
@@ -72,8 +72,8 @@ const removeFriend = async () => {
         <li v-else-if="props.status === Status.FRIENDS"><button class="btn-small pure-button" @click="removeFriend">Remove Friend</button></li>
       </menu>
       <article class="timestamp">
-        <p v-if="props.profile.dateCreated !== props.profile.dateUpdated">Edited on: {{ formatDate(props.profile.dateUpdated) }}</p>
-        <p v-else>Created on: {{ formatDate(props.profile.dateCreated) }}</p>
+        <p v-if="props.profile.dateCreated !== props.profile.dateUpdated">Edited on: {{ formatDateTime(props.profile.dateUpdated) }}</p>
+        <p v-else>Created on: {{ formatDateTime(props.profile.dateCreated) }}</p>
       </article>
     </div>
   </article>

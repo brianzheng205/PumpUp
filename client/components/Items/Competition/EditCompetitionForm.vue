@@ -28,8 +28,8 @@ const editCompetition = async (name: string, endDate: Date, isLinked: boolean) =
   } catch (_) {
     return;
   }
-  editStore.resetEditing();
   emit("refreshCompetitions");
+  editStore.resetEditing();
 };
 
 const getLink = async () => {

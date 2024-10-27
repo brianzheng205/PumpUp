@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
-import { formatDate } from "@/utils/formatDate";
+import { formatDateTime } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import ToggleLink from "../../Link/ToggleLink.vue";
@@ -69,8 +69,8 @@ onBeforeMount(async () => {
         <li><ToggleLink :linkExists="link !== null" @createLink="createCommentLink" @deleteLink="deleteCommentLink" /></li>
       </menu>
       <article class="timestamp">
-        <p v-if="props.comment.dateCreated !== props.comment.dateUpdated">Edited on: {{ formatDate(props.comment.dateUpdated) }}</p>
-        <p v-else>Created on: {{ formatDate(props.comment.dateCreated) }}</p>
+        <p v-if="props.comment.dateCreated !== props.comment.dateUpdated">Edited on: {{ formatDateTime(props.comment.dateUpdated) }}</p>
+        <p v-else>Created on: {{ formatDateTime(props.comment.dateCreated) }}</p>
       </article>
     </div>
   </article>

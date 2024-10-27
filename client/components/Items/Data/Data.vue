@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
-import { formatDate } from "@/utils/formatDate";
+import { formatDateTime } from "@/utils/formatDate";
 
 const props = defineProps(["data"]);
 const emit = defineEmits(["refreshData"]);
@@ -16,7 +16,7 @@ const deleteData = async () => {
 </script>
 
 <template>
-  <p class="date">{{ formatDate(props.data.date).split(",")[0] }}</p>
+  <p class="date">{{ formatDateTime(props.data.date).split(",")[0] }}</p>
   <p class="score">Intensity: {{ props.data.score }}</p>
   <div class="base">
     <button class="button-error btn-small pure-button" @click="deleteData">Delete</button>

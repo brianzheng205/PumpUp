@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatDate } from "@/utils/formatDate";
+import { formatDateTime } from "@/utils/formatDate";
 import { ref } from "vue";
 
 const props = defineProps(["contentContainer"]);
@@ -17,8 +17,8 @@ const emit = defineEmits(["editContainer", "setEditing"]);
         <li><button class="btn-small pure-button-primary pure-button" type="submit">Save</button></li>
         <li><button class="btn-small pure-button" @click="emit('setEditing')">Cancel</button></li>
       </menu>
-      <p v-if="props.contentContainer.dateCreated !== props.contentContainer.dateUpdated" class="timestamp">Edited on: {{ formatDate(props.contentContainer.dateUpdated) }}</p>
-      <p v-else class="timestamp">Created on: {{ formatDate(props.contentContainer.dateCreated) }}</p>
+      <p v-if="props.contentContainer.dateCreated !== props.contentContainer.dateUpdated" class="timestamp">Edited on: {{ formatDateTime(props.contentContainer.dateUpdated) }}</p>
+      <p v-else class="timestamp">Created on: {{ formatDateTime(props.contentContainer.dateCreated) }}</p>
     </div>
   </form>
 </template>

@@ -2,13 +2,14 @@
 import { useEditStore } from "@/stores/editing";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
-import { formatDate } from "@/utils/formatDate";
+import { formatDateTime } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 
 const props = defineProps<{
-  competition: any;
+  competition: Record<string, string>;
 }>();
+
 const emit = defineEmits<{
   (e: "refreshCompetitions", author?: string): void;
 }>();
@@ -54,13 +55,15 @@ const leaveCompetition = async () => {
   getCompetitionMembers();
 };
 
-onBeforeMount(getCompetitionMembers);
+onBeforeMount(async () => {
+  await getCompetitionMembers();
+});
 </script>
 
 <template>
   <p class="title">{{ props.competition.name }}</p>
   <p v-if="props.competition.owner">Created by {{ props.competition.owner }}</p>
-  <p>End Date: {{ new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(props.competition.endDate)) }}</p>
+  <p>End Date: {{ formatDateTime(props.competition.endDate) }}</p>
   <p>Members:</p>
   <ul>
     <li v-for="member in members">{{ member }}</li>
@@ -73,8 +76,8 @@ onBeforeMount(getCompetitionMembers);
     <button v-else-if="!members.has(currentUsername)" class="btn-small pure-button" @click="joinCompetition">Join</button>
     <button v-else class="button-error btn-small pure-button" @click="leaveCompetition">Leave</button>
     <article class="timestamp">
-      <p v-if="props.competition.dateCreated !== props.competition.dateUpdated">Edited on: {{ formatDate(props.competition.dateUpdated) }}</p>
-      <p v-else>Created on: {{ formatDate(props.competition.dateCreated) }}</p>
+      <p v-if="props.competition.dateCreated !== props.competition.dateUpdated">Edited on: {{ formatDateTime(props.competition.dateUpdated) }}</p>
+      <p v-else>Created on: {{ formatDateTime(props.competition.dateCreated) }}</p>
     </article>
   </div>
 </template>

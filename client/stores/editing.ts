@@ -7,11 +7,11 @@ export const useEditStore = defineStore(
     const editingId = ref("");
 
     const setEditing = (id: string) => {
-      editingId.value = id;
+      setTimeout(() => (editingId.value = id), 200);
     };
 
     const resetEditing = () => {
-      editingId.value = "";
+      setTimeout(() => (editingId.value = ""), 200);
     };
 
     return {

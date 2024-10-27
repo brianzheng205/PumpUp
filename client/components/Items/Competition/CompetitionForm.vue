@@ -24,7 +24,8 @@ const isLinked = ref<boolean | null>(props.initialInfo.isLinked);
 const formattedEndDate = computed({
   get: () => (endDate.value ? endDate.value.toISOString().slice(0, 10) : ""),
   set: (value: string) => {
-    endDate.value = value ? new Date(value) : null;
+    const date = new Date(value + "T00:00:00-04:00");
+    endDate.value = date;
   },
 });
 
