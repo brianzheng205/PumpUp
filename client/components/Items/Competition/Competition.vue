@@ -56,7 +56,6 @@ const leaveCompetition = async () => {
   getCompetitionMembers();
 };
 
-// /competitions/:name/scores
 const getHighScores = async () => {
   try {
     memberScores.value = await fetchy(`/api/competitions/${props.competition._id}/scores`, "GET");

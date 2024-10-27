@@ -15,10 +15,10 @@ const editStore = useEditStore();
 
 const initialName = computed(() => props.competition.name);
 const initialEndDate = computed(() => new Date(props.competition.endDate));
-const initialIsLinked = ref(false);
+const initialIsLinked = ref<boolean | null>(null);
 
 const editCompetition = async (name: string, endDate: Date, isLinked: boolean) => {
-  const body: Record<string, string | boolean> = { isLinked: isLinked ? "true" : "false" };
+  const body: Record<string, string | boolean> = { isLinked: isLinked.toString() };
 
   if (name !== initialName.value) body.newName = name;
   if (endDate.getTime() !== initialEndDate.value.getTime()) body.endDate = endDate.toString();

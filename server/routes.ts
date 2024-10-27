@@ -160,11 +160,14 @@ class Routes {
   }
 
   @Router.patch("/posts/:id")
-  async updatePost(session: SessionDoc, id: string, content?: string, options?: PostOptions) {
+  async updatePost(session: SessionDoc, id: string, content?: string, isLinked?: string, options?: PostOptions) {
     const user = Sessioning.getUser(session);
     const oid = new ObjectId(id);
     await Posting.assertUserIsAuthor(oid, user);
-    return await Posting.update(oid, content, options);
+    const postUpdate = await Posting.update(oid, content, options);
+    const isLinkedBool = isLinked === "true";
+    const linkUpdate = await Linking.update(user, oid, isLinkedBool);
+    return { msg: `${postUpdate.msg} ${linkUpdate.msg}` };
   }
 
   @Router.delete("/posts/:id")
@@ -457,6 +460,13 @@ class Routes {
     const user = Sessioning.getUser(session);
     const link = await Linking.getByUserItem(user, new ObjectId(itemId));
     return link ? await Responses.link(link) : link;
+  }
+
+  @Router.get("/links/exists")
+  async getUserItemExists(session: SessionDoc, itemId: string) {
+    const user = Sessioning.getUser(session);
+    const link = await Linking.getByUserItem(user, new ObjectId(itemId));
+    return link ? true : false;
   }
 
   @Router.get("/links/posts")

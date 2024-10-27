@@ -1,8 +1,7 @@
-/* Add some global styles here! */
-
 :root {
   --red: rgb(208, 67, 12);
   --base-bg: #f1f3f5;
+  font-family: "Quicksand", sans-serif;
 }
 
 button.btn-small {

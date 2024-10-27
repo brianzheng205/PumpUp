@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
 import { onBeforeMount, ref } from "vue";
-import EditContentForm from "../EditContentForm.vue";
 import SearchItemForm from "../SearchItemForm.vue";
+import EditPostForm from "./EditPostForm.vue";
 import Post from "./Post.vue";
 
 const loaded = ref(false);
@@ -26,16 +26,6 @@ function setEditing(id: string) {
   editing.value = id;
 }
 
-const editPost = async (postId: string, content: string) => {
-  try {
-    await fetchy(`/api/posts/${postId}`, "PATCH", { body: { content } });
-  } catch (e) {
-    return;
-  }
-  editing.value = "";
-  await getPosts();
-};
-
 onBeforeMount(async () => {
   await getPosts();
   loaded.value = true;
@@ -51,7 +41,7 @@ onBeforeMount(async () => {
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
       <Post v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="setEditing" />
-      <EditContentForm v-else :contentContainer="post" @editContainer="(content: string) => editPost(post._id, content)" @setEditing="setEditing" />
+      <EditPostForm v-else :post="post" @refreshPosts="getPosts" @setEditing="setEditing" />
     </article>
   </section>
   <p v-else-if="loaded">No posts found</p>

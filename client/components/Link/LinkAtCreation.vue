@@ -2,7 +2,6 @@
 const props = defineProps<{
   isLinked: boolean | null;
 }>();
-
 const emit = defineEmits<{
   (e: "setIsLinked", value: boolean): void;
 }>();
