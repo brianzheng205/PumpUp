@@ -26,8 +26,6 @@ async function getCompetitions(author?: string) {
   competitions.value = competitionResults;
 }
 
-// TODO: make each article clickable
-
 onBeforeMount(async () => {
   await getCompetitions();
   loaded.value = true;
