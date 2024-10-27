@@ -243,26 +243,23 @@ class Routes {
 
   /**
    * Get all data, redacting all unlinked users that are not the user. Optionally,
-   * filter by `username`, `date`, or `dateRange`. Only one of `date` or `dateRange`
-   * should be specified. Optionally, sort by `sort`.
+   * filter by `username`, `startDate`, or `endDate`. Optionally, sort by `sort`.
    * @param session The session of the user
    * @param [username] The username of the user to filter by. Also filter by existing `username`-data
    * links if `username` does not match user's.
-   * @param [date] The date
-   * @param [dateRange] The date range
+   * @param [startDate] The start date
+   * @param [endDate] The end date
    * @param [sort] The field to sort by (`score` or `date`)
    * @returns An array of data, filtered and redacted if necessary
    */
   @Router.get("/data")
-  // @Router.validate(z.object({ username: z.string().optional(), date: z.string().optional(), dateRange: z.string().optional(), sort: z.string().optional() }))
-  async getData(session: SessionDoc, username?: string, date?: string, dateRange?: string, sort?: string) {
+  async getData(session: SessionDoc, username?: string, startDate?: string, endDate?: string, sort?: string) {
     const user = Sessioning.isLoggedIn(session) ? Sessioning.getUser(session) : undefined;
     const usernameOid = username ? (await Authing.getUserByUsername(username))._id : undefined;
-    const dateObj = date ? new Date(date) : undefined;
-    const dateRangeArr = dateRange ? dateRange.split("_") : undefined;
-    const dateRangeParsed = dateRangeArr ? ([new Date(dateRangeArr[0]), new Date(dateRangeArr[1])] as [Date, Date]) : undefined;
+    const startDateObj = startDate ? new Date(startDate) : undefined;
+    const endDateObj = endDate ? new Date(endDate) : undefined;
     const sortParsed = sort === "score" ? SortOptions.SCORE : sort === "date" ? SortOptions.DATE : undefined;
-    const allData = await Tracking.getData(usernameOid, dateObj, dateRangeParsed, sortParsed);
+    const allData = await Tracking.getData(usernameOid, startDateObj, endDateObj, sortParsed);
     const allDataFormatted = await Responses.data(allData);
     return await Promise.all(allDataFormatted.map(async (d, i) => ((user && user.equals(allData[i].user)) || (await Linking.hasLink(allData[i]._id, d._id)) ? d : Tracking.redactUser(d))));
   }

@@ -43,17 +43,21 @@ export default class TrackingConcept {
   /**
    * Get data based on the following filters:
    *   - `username`: A user's username
-   *   - `date` or `dateRange`: A date or a date range
+   *   - `startDate`: A start date
+   *   - `endDate`: An end date
    *
    * and the following sort options:
-   *   - `sort`: A field to sort by (score or date)
+   *   - `sort`: A field to sort by (`score` or `date`)
    */
-  async getData(user?: ObjectId, date?: Date, dateRange?: [Date, Date], sort?: SortOptions) {
-    // TODO: create custom error to be thrown if both date and dateRange are provided
+  async getData(user?: ObjectId, startDate?: Date, endDate?: Date, sort?: SortOptions) {
     const query: Record<string, unknown> = {};
     if (user) query.user = user;
-    if (date) query.date = date;
-    if (dateRange) query.date = { $gte: dateRange[0], $lte: dateRange[1] };
+    if (startDate || endDate) {
+      const dateRange = {} as Record<string, unknown>;
+      if (startDate) dateRange.$gte = startDate;
+      if (endDate) dateRange.$lte = endDate;
+      query.date = dateRange;
+    }
     return await this.data.readMany(query, { sort: sort === SortOptions.SCORE ? { score: -1 } : sort === SortOptions.DATE ? { date: -1 } : {} });
   }
 
