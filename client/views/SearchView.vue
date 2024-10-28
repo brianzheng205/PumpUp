@@ -9,7 +9,7 @@ const selected = ref("competitions");
 <template>
   <main>
     <h1>Search</h1>
-    <div>
+    <div class="select">
       <select v-model="selected">
         <option value="competitions">Competitions</option>
         <option value="profiles">Profiles</option>
@@ -23,5 +23,10 @@ const selected = ref("competitions");
 <style scoped>
 h1 {
   text-align: center;
+}
+
+.select {
+  display: flex;
+  justify-content: center;
 }
 </style>

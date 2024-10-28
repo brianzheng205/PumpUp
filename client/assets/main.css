@@ -9,15 +9,19 @@
   font-family: "Quicksand", sans-serif;
 }
 
-button.btn {
+button.btn-primary {
   background: var(--green);
+  color: black;
+}
+
+button.btn,
+button.btn-small {
+  background: var(--gray);
   color: black;
 }
 
 button.btn-small {
   font-size: 80%;
-  background: var(--gray);
-  color: black;
 }
 
 button.button-error {

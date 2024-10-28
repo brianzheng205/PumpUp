@@ -61,15 +61,14 @@ const removeFriend = async () => {
 
 <template>
   <article>
-    <p class="username">{{ props.profile.username }}</p>
-    <p>{{ props.profile.content }}</p>
+    <h2 class="username">{{ props.profile.username }}</h2>
     <div class="base">
       <menu>
         <li v-if="props.status === Status.NONE"><button class="btn-small pure-button" @click="sendFriendRequest">Send Friend Request</button></li>
         <li v-else-if="props.status === Status.SENT"><button class="button-error btn-small pure-button" @click="removeFriendRequest">Cancel Friend Request</button></li>
-        <li v-else-if="props.status === Status.RECEIVED"><button class="btn-small pure-button" @click="acceptFriendRequest">Accept Friend Request</button></li>
+        <li v-else-if="props.status === Status.RECEIVED"><button class="btn-small pure-button btn-primary" @click="acceptFriendRequest">Accept Friend Request</button></li>
         <li v-if="props.status === Status.RECEIVED"><button class="button-error btn-small pure-button" @click="rejectFriendRequest">Reject Friend Request</button></li>
-        <li v-else-if="props.status === Status.FRIENDS"><button class="btn-small pure-button" @click="removeFriend">Remove Friend</button></li>
+        <li v-else-if="props.status === Status.FRIENDS"><button class="button-error btn-small pure-button" @click="removeFriend">Remove Friend</button></li>
       </menu>
       <article class="timestamp">
         <p v-if="props.profile.dateCreated !== props.profile.dateUpdated">Edited on: {{ formatDateTime(props.profile.dateUpdated) }}</p>
@@ -78,14 +77,3 @@ const removeFriend = async () => {
     </div>
   </article>
 </template>
-
-<style scoped>
-menu {
-  list-style-type: none;
-  display: flex;
-  flex-direction: row;
-  gap: 1em;
-  padding: 0;
-  margin: 0;
-}
-</style>
