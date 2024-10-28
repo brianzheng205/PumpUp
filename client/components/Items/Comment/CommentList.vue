@@ -1,36 +1,23 @@
 <script setup lang="ts">
-import { fetchy } from "@/utils/fetchy";
 import { ref } from "vue";
-import EditContentForm from "../EditContentForm.vue";
 import SearchItemForm from "../SearchItemForm.vue";
 import Comment from "./Comment.vue";
+import EditCommentForm from "./EditCommentForm.vue";
 
-const props = defineProps({
-  comments: {
-    type: Array<Record<string, string>>,
-    required: true,
-  },
-  editing: {
-    type: String,
-    required: true,
-  },
-  legendText: {
-    type: String,
-  },
-});
-const emit = defineEmits(["setEditing", "refreshComments"]);
+const props = defineProps<{
+  comments: Array<Record<string, string>>;
+  editing: string;
+  legendText?: string;
+}>();
+const emit = defineEmits<{
+  (e: "refreshComments", author?: string): void;
+  (e: "setEditing", id: string): void;
+}>();
 
 const loading = ref(false); // TODO: implement
 const searchAuthor = ref("");
 
-const editComment = async (id: string, content: string) => {
-  try {
-    await fetchy(`/api/comments/${id}`, "PATCH", { body: { content } });
-    emit("refreshComments");
-  } catch {
-    return;
-  }
-  emit("setEditing");
+const refreshComments = async () => {
   emit("refreshComments");
 };
 
@@ -49,7 +36,7 @@ const setEditing = (id: string) => {
     <section v-if="!loading && props.comments.length !== 0">
       <article v-for="comment in props.comments" :key="comment._id">
         <Comment v-if="props.editing !== comment._id" :comment="comment" @refreshComments="emit('refreshComments')" @setEditing="emit('setEditing', $event)" />
-        <EditContentForm v-else :contentContainer="comment" @editContainer="(content: string) => editComment(comment._id, content)" @setEditing="setEditing" />
+        <EditCommentForm v-else :comment="comment" @refreshComments="refreshComments" @setEditing="setEditing" />
       </article>
     </section>
     <p v-else-if="!loading">No comments found</p>

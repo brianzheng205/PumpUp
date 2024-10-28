@@ -227,11 +227,13 @@ class Routes {
   }
 
   @Router.patch("/comments/:id")
-  async updateComment(session: SessionDoc, id: string, content?: string) {
+  async updateComment(session: SessionDoc, id: string, content?: string, isLinked?: string) {
     const user = Sessioning.getUser(session);
     const oid = new ObjectId(id);
     await Commenting.assertUserIsAuthor(oid, user);
-    return await Commenting.update(oid, content);
+    const commentUpdate = await Commenting.update(oid, content);
+    const linkUpdate = await Linking.update(user, oid, isLinked === "true");
+    return { msg: `${commentUpdate.msg} ${linkUpdate.msg}` };
   }
 
   @Router.delete("/comments/:id")

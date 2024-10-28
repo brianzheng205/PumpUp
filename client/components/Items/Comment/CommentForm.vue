@@ -29,10 +29,10 @@ watch(
 
 <template>
   <form class="create-form" @submit.prevent="isLinked !== null && emit('onSave', content, isLinked)">
-    <h2>Post</h2>
+    <h2>Comment</h2>
     <LinkAtCreation :isLinked="isLinked" @setIsLinked="setIsLinked" />
-    <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
-    <button type="submit" class="pure-button-primary pure-button" :disabled="content.trim() === '' || isLinked === null">{{ props.isEditing ? "Update Post" : "Create Post" }}</button>
-    <button v-if="props.isEditing" class="pure-button" @click.prevent="emit('onCancel')">Cancel</button>
+    <textarea id="content" v-model="content" placeholder="Create a comment!" required> </textarea>
+    <button type="submit" class="pure-button-primary pure-button" :disabled="content.trim() === '' || isLinked === null">{{ props.isEditing ? "Update Comment" : "Create Comment" }}</button>
+    <button class="pure-button" @click.prevent="emit('onCancel')">Cancel</button>
   </form>
 </template>

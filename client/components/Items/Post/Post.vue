@@ -13,7 +13,6 @@ const emit = defineEmits(["editPost", "refreshPosts"]);
 const { currentUsername } = storeToRefs(useUserStore());
 
 const comments = ref<Array<Record<string, string>>>([]);
-const link = ref<Record<string, string> | null>(null);
 const editing = ref("");
 
 const deletePost = async () => {
@@ -38,37 +37,7 @@ const setEditing = (itemId: string) => {
   editing.value = itemId;
 };
 
-const getPostLink = async () => {
-  try {
-    link.value = await fetchy(`/api/links`, "GET", { query: { itemId: props.post._id } });
-  } catch {
-    return;
-  }
-};
-
-const createPostLink = async () => {
-  try {
-    link.value = await fetchy(`/api/links/posts`, "POST", { body: { postId: props.post._id } });
-  } catch {
-    return;
-  }
-};
-
-const deletePostLink = async () => {
-  if (link.value === null) return;
-
-  try {
-    await fetchy(`/api/links/posts/${link.value._id}`, "DELETE");
-    link.value = null;
-  } catch {
-    return;
-  }
-};
-
-onBeforeMount(async () => {
-  await getPostComments();
-  await getPostLink();
-});
+onBeforeMount(getPostComments);
 </script>
 
 <template>
@@ -84,7 +53,7 @@ onBeforeMount(async () => {
       <p v-else>Created on: {{ formatDateTime(props.post.dateCreated) }}</p>
     </article>
     <button v-if="editing !== props.post._id" class="btn-small pure-button" @click="setEditing(props.post._id)">Comment</button>
-    <CreateCommentForm v-else :itemId="props.post._id" @refreshComments="getPostComments" @setEditing="setEditing" />
+    <CreateCommentForm v-else :postId="props.post._id" @refreshComments="getPostComments" @setEditing="setEditing" />
   </div>
   <CommentList :comments="comments" :editing="editing" legendText="Search By Author" @refreshComments="getPostComments" @setEditing="setEditing" />
 </template>
