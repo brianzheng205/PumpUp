@@ -34,7 +34,7 @@ const editCompetition = async (name: string, endDate: Date, isLinked: boolean) =
 
 const getLink = async () => {
   try {
-    initialIsLinked.value = (await fetchy(`/api/links`, "GET", { query: { itemId: props.competition._id } })) !== null;
+    initialIsLinked.value = await fetchy(`/api/links/exists`, "GET", { query: { itemId: props.competition._id } });
   } catch {
     return;
   }
