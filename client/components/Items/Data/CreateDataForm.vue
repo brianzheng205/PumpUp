@@ -35,3 +35,9 @@ const logWorkout = async () => {
     <button type="submit" class="pure-button-primary pure-button" :disabled="!canCreate">Log Workout</button>
   </form>
 </template>
+
+<style scoped>
+form {
+  max-width: 250px;
+}
+</style>

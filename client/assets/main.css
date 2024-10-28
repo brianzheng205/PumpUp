@@ -1,22 +1,32 @@
 :root {
-  --red: rgb(208, 67, 12);
-  --base-bg: #f1f3f5;
+  --red: #ef959c;
+  --gray: #dbc7be;
+  --blue: #f1f3f5;
+  --green: #8bd1c2;
+  --base-bg: #8da1b9;
+  --bg: #95adb6;
+  background: var(--bg);
   font-family: "Quicksand", sans-serif;
+}
+
+button.btn {
+  background: var(--green);
+  color: black;
 }
 
 button.btn-small {
   font-size: 80%;
+  background: var(--gray);
+  color: black;
 }
 
 button.button-error {
-  color: white;
   background: var(--red);
 }
 
 a.button {
   color: #212529;
-  background-color: #f1f3f5;
-  border: 1px solid #dee2e6;
+  background-color: var(--blue);
   border-radius: 0.25em;
   padding: 0.375em 0.75em;
   text-decoration: none;
@@ -54,4 +64,13 @@ form.create-form > textarea {
   padding: 0.5em;
   border-radius: 4px;
   resize: none;
+}
+
+menu {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  padding: 0;
+  margin: 0;
 }

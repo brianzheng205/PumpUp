@@ -12,7 +12,7 @@ const author = ref("");
     <fieldset>
       <legend>{{ props.legendText }}</legend>
       <input id="author" type="text" v-model="author" placeholder="Username" />
-      <button type="submit" class="pure-button pure-button-primary">Search</button>
+      <button type="submit" class="pure-button pure-button-primary btn">Search</button>
     </fieldset>
   </form>
 </template>

@@ -16,8 +16,11 @@ const deleteData = async () => {
 </script>
 
 <template>
+  <h1 class="score">{{ props.data.score }}</h1>
   <p class="date">{{ formatDate(props.data.date) }}</p>
-  <p class="score">Intensity: {{ props.data.score }}</p>
+  <div class="score-bar">
+    <div class="score-bar-inner" :style="{ width: `${props.data.score}%` }"></div>
+  </div>
   <div class="base">
     <button class="button-error btn-small pure-button" @click="deleteData">Delete</button>
   </div>
@@ -30,17 +33,20 @@ const deleteData = async () => {
 }
 
 .score {
-  font-size: 1.2em;
   font-weight: bold;
+  text-align: center;
 }
 
-.menu {
-  list-style-type: none;
-  display: flex;
-  flex-direction: row;
-  gap: 1em;
-  padding: 0;
-  margin: 0;
+.score-bar {
+  height: 1em;
+  background-color: var(--gray);
+  border-radius: 0.5em;
+}
+
+.score-bar-inner {
+  height: 100%;
+  background-color: var(--green);
+  border-radius: 0.5em;
 }
 
 .base {

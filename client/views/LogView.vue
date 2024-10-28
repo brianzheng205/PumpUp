@@ -50,26 +50,33 @@ onBeforeMount(async () => {
 <template>
   <main>
     <h1>Log A Workout!</h1>
-    <div>
+    <div class="col">
       <CreateDataForm @refreshData="getData" />
-      <label for="sort">Sort by:</label>
-      <select id="sort" v-model="selectedSort" @change="getData()">
-        <option value="date">Date</option>
-        <option value="score">Score</option>
-      </select>
-      <label for="startDate">Start Date:</label>
-      <input type="date" id="startDate" v-model="selectedStartDate" @change="getData()" />
-      <button @click="setEndDateToStartDate" :disabled="selectedStartDate === null">Set End Date as Start Date</button>
-      <label for="endDate">End Date:</label>
-      <input type="date" id="endDate" v-model="selectedEndDate" @change="getData()" />
-      <button @click="clearDates" :disabled="selectedStartDate === null && selectedEndDate === null">Clear Dates</button>
+      <h2>Past Workouts:</h2>
+      <div class="row">
+        <label for="sort">Sort by:</label>
+        <select id="sort" v-model="selectedSort" @change="getData()">
+          <option value="date">Date</option>
+          <option value="score">Score</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" v-model="selectedStartDate" @change="getData()" />
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" v-model="selectedEndDate" @change="getData()" />
+      </div>
+      <div class="row">
+        <button class="btn-small pure-button btn" @click="setEndDateToStartDate" :disabled="selectedStartDate === null">Set End Date as Start Date</button>
+        <button class="btn-small pure-button btn" @click="clearDates" :disabled="selectedStartDate === null && selectedEndDate === null">Clear</button>
+      </div>
       <DataList :data="data" :loaded="loaded" />
     </div>
   </main>
 </template>
 
 <style scoped>
-div {
+.col {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -80,5 +87,12 @@ div {
 
 h1 {
   text-align: center;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  align-items: center;
 }
 </style>
