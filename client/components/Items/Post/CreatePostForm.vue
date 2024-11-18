@@ -16,5 +16,7 @@ const createPost = async (content: string, isLinked: boolean) => {
 </script>
 
 <template>
-  <PostForm :initialInfo="{ content: '', isLinked: null }" :isEditing="false" @onSave="createPost" @onCancel="() => {}" />
+  <article>
+    <PostForm :initialInfo="{ content: '', isLinked: null }" :isEditing="false" @onSave="createPost" @onCancel="() => {}" />
+  </article>
 </template>

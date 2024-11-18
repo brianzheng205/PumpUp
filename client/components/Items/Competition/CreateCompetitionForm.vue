@@ -16,5 +16,7 @@ const createCompetition = async (name: string, endDate: Date, isLinked: boolean)
 </script>
 
 <template>
-  <CompetitionForm :initialInfo="{ name: '', endDate: null, isLinked: null }" :isEditing="false" @onSave="createCompetition" />
+  <article>
+    <CompetitionForm :initialInfo="{ name: '', endDate: null, isLinked: null }" :isEditing="false" @onSave="createCompetition" />
+  </article>
 </template>

@@ -41,17 +41,17 @@ onBeforeMount(getPostComments);
 </script>
 
 <template>
-  <p class="author">{{ props.post.author }}</p>
+  <p class="author">{{ props.post.author ? props.post.author : "Anonymous" }}</p>
   <p>{{ props.post.content }}</p>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">
       <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
       <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
     </menu>
-    <article class="timestamp">
+    <div class="timestamp">
       <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDateTime(props.post.dateUpdated) }}</p>
       <p v-else>Created on: {{ formatDateTime(props.post.dateCreated) }}</p>
-    </article>
+    </div>
     <button v-if="editing !== props.post._id" class="btn-small pure-button" @click="setEditing(props.post._id)">Comment</button>
     <CreateCommentForm v-else :postId="props.post._id" @refreshComments="getPostComments" @setEditing="setEditing" />
   </div>

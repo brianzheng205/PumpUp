@@ -34,10 +34,10 @@ const setEditing = (id: string) => {
       <SearchItemForm :legendText="props.legendText" />
     </div>
     <section v-if="!loading && props.comments.length !== 0">
-      <article v-for="comment in props.comments" :key="comment._id">
+      <div v-for="comment in props.comments" :key="comment._id">
         <Comment v-if="props.editing !== comment._id" :comment="comment" @refreshComments="emit('refreshComments')" @setEditing="emit('setEditing', $event)" />
         <EditCommentForm v-else :comment="comment" @refreshComments="refreshComments" @setEditing="setEditing" />
-      </article>
+      </div>
     </section>
     <p v-else-if="!loading">No comments found</p>
     <p v-else>Loading...</p>

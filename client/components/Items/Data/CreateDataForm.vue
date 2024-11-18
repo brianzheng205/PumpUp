@@ -26,14 +26,16 @@ const logWorkout = async () => {
 </script>
 
 <template>
-  <form class="create-form" @submit.prevent="logWorkout()">
-    <h2>New Workout</h2>
-    <label for="score">Intensity (0-100):</label>
-    <input type="number" id="score" v-model="score" min="0" max="100" step="1" required />
-    <label for="date">Date:</label>
-    <input type="date" id="date" v-model="date" required />
-    <button type="submit" class="pure-button-primary pure-button" :disabled="!canCreate">Log Workout</button>
-  </form>
+  <article>
+    <form class="create-form" @submit.prevent="logWorkout()">
+      <h2>New Workout</h2>
+      <label for="score">Intensity (0-100):</label>
+      <input type="number" id="score" v-model="score" min="0" max="100" step="1" required />
+      <label for="date">Date:</label>
+      <input type="date" id="date" v-model="date" required />
+      <button type="submit" class="pure-button-primary pure-button" :disabled="!canCreate">Log Workout</button>
+    </form>
+  </article>
 </template>
 
 <style scoped>

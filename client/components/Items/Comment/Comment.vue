@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
-import { formatDateTime } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 
 const props = defineProps(["comment"]);
@@ -24,18 +23,17 @@ const editComment = async () => {
 </script>
 
 <template>
-  <article>
-    <p class="author">{{ props.comment.author }}</p>
-    <p>{{ props.comment.content }}</p>
+  <div>
+    <p class="author">
+      <strong>{{ props.comment.author ? props.comment.author : "Anonymous" }} -</strong> {{ props.comment.content }}
+    </p>
     <div class="base">
       <menu v-if="props.comment.author == currentUsername">
         <li><button class="btn-small pure-button" @click="editComment">Edit</button></li>
         <li><button class="button-error btn-small pure-button" @click="deleteComment">Delete</button></li>
       </menu>
-      <article class="timestamp">
-        <p v-if="props.comment.dateCreated !== props.comment.dateUpdated">Edited on: {{ formatDateTime(props.comment.dateUpdated) }}</p>
-        <p v-else>Created on: {{ formatDateTime(props.comment.dateCreated) }}</p>
-      </article>
     </div>
-  </article>
+  </div>
 </template>
+
+<style scoped></style>

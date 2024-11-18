@@ -16,11 +16,10 @@ import CreatePostForm from "@/components/Items/Post/CreatePostForm.vue";
 <style scoped>
 div {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
   gap: 1em;
-  width: 30%;
-  margin: 0 auto;
 }
 
 h1 {

@@ -62,15 +62,6 @@ p,
   max-width: 60em;
 }
 
-article {
-  background-color: var(--base-bg);
-  border-radius: 1em;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  padding: 1em;
-}
-
 .posts {
   padding: 1em;
 }
