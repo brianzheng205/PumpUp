@@ -2,11 +2,14 @@
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
+import { onBeforeMount, ref } from "vue";
 
 const props = defineProps(["comment"]);
 const emit = defineEmits(["refreshComments", "setEditing"]);
 
 const { currentUsername } = storeToRefs(useUserStore());
+
+const isLinked = ref(false);
 
 const deleteComment = async () => {
   try {
@@ -20,12 +23,22 @@ const deleteComment = async () => {
 const editComment = async () => {
   emit("setEditing", props.comment._id);
 };
+
+const getLink = async () => {
+  try {
+    isLinked.value = await fetchy(`/api/links/exists`, "GET", { query: { itemId: props.comment._id } });
+  } catch {
+    return;
+  }
+};
+
+onBeforeMount(getLink);
 </script>
 
 <template>
   <div>
-    <p class="author">
-      <strong>{{ props.comment.author ? props.comment.author : "Anonymous" }} -</strong> {{ props.comment.content }}
+    <p :class="{ 'self-author': props.comment.author == currentUsername }">
+      {{ props.comment.author ? props.comment.author : "Anonymous" }}{{ props.comment.author == currentUsername && !isLinked ? " (Anonymous)" : "" }}
     </p>
     <div class="base">
       <menu v-if="props.comment.author == currentUsername">
@@ -36,4 +49,8 @@ const editComment = async () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.self-author {
+  color: var(--gray);
+}
+</style>

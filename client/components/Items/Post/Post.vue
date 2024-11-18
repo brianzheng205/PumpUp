@@ -12,6 +12,7 @@ const emit = defineEmits(["editPost", "refreshPosts"]);
 
 const { currentUsername } = storeToRefs(useUserStore());
 
+const isLinked = ref(false);
 const comments = ref<Array<Record<string, string>>>([]);
 const editing = ref("");
 
@@ -33,15 +34,28 @@ const getPostComments = async (author?: string) => {
   }
 };
 
+const getLink = async () => {
+  try {
+    isLinked.value = await fetchy(`/api/links/exists`, "GET", { query: { itemId: props.post._id } });
+  } catch {
+    return;
+  }
+};
+
 const setEditing = (itemId: string) => {
   editing.value = itemId;
 };
 
-onBeforeMount(getPostComments);
+onBeforeMount(async () => {
+  await getPostComments();
+  await getLink();
+});
 </script>
 
 <template>
-  <p class="author">{{ props.post.author ? props.post.author : "Anonymous" }}</p>
+  <p class="author" :class="{ 'self-author': props.post.author == currentUsername }">
+    {{ props.post.author ? props.post.author : "Anonymous" }}{{ props.post.author == currentUsername && !isLinked ? " (Anonymous)" : "" }}
+  </p>
   <p>{{ props.post.content }}</p>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">
@@ -66,6 +80,10 @@ p {
 .author {
   font-weight: bold;
   font-size: 1.2em;
+}
+
+.self-author {
+  color: var(--gray);
 }
 
 .timestamp {
