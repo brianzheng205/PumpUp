@@ -11,7 +11,7 @@ const createCompetition = async (name: string, endDate: Date, isLinked: boolean)
   } catch (_) {
     return;
   }
-  void router.push({ name: "Competitions" });
+  void router.push({ name: "Search" });
 };
 </script>
 

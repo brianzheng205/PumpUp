@@ -19,7 +19,7 @@ div {
   flex-direction: column;
   align-items: center;
   gap: 1em;
-  width: 60%;
+  width: 30%;
   margin: 0 auto;
 }
 
